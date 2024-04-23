@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTK - Company Website</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+
+/* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFE5B4	; /* Semi-transparent white background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's above other elements */
+        }
+
+        .loading-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333; /* Dark text color */
+        }
+
+        /* Hide content initially */
+        main, footer {
+            display: none;
+        }
+
+        /* Styles for loading animation */
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 50px;
+            height: 50px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px;
+            margin-left: -25px;
+            z-index: 9999;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Styles for header animation */
+        @keyframes fadeInHeader {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0%);
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #F1F1F2;
+        }
+
+        header {
+            background-color: #EDF4F2;
+            color: #000000;
+            padding: 20px;
+            text-align: center;
+            opacity: 0; /* Initially hide the header */
+            transition: opacity 1s ease-in-out; /* Add a transition for opacity */
+            animation: fadeInHeader 3s ease-in-out; /* Add animation for header */
+        }
+
+        .title {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 32px; /* Adjust as needed */
+        }
+
+        .title span {
+            transition: transform 1s ease-in-out; /* Added transition for smooth effect */
+        }
+
+        .subtitle {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .subtitle p {
+            margin: 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #CEE6F2;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        nav a {
+            color: #000000;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffa500;
+        }
+
+        main {
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #90AFC5;
+            color: #050505;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .services {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .service {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 30%;
+        }
+
+        #downloadBtn,
+        #infoBtn {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #works,
+        .testimonial {
+            margin-top: 40px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .work,
+        .testimonial-card {
+            display: inline-block;
+            margin: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .work:hover,
+        .testimonial-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .work img,
+        .testimonial-card img {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .work p,
+        .testimonial-card p {
+            margin-top: 5px;
+        }
+
+        #feedback {
+            margin-top: 40px;
+        }
+
+        .feedback {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .feedback p {
+            margin-bottom: 10px;
+        }
+
+        .about {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .contact-form {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .contact-form button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .testimonial {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .testimonial-card {
+            width: 30%;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .testimonial-card img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-card p {
+            margin-bottom: 10px;
+        }
+
+        .faq {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+        }
+
+        .faq-item h3 {
+            margin-bottom: 10px;
+        }
+
+        .social-media {
+            margin-top: 40px;
+            font-size: 24px;
+        }
+
+        .social-media a {
+            display: inline-block;
+            margin-right: 20px;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+
+        .social-media a:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+ <!-- Loading animation -->
+    <div class="loader"></div>
+
+    <!-- Header -->
+    <header id="header">
+        <div class="title">
+            <span>G</span>
+            <span>T</span>
+            <span>K</span>
+        </div>
+        <div class="subtitle">
+            <p>Growth Through Knowledge</p>
+        </div>
+    </header>
+
+    <nav>
+
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#Client Testimonials">Works Done</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#about">About Us</a>
+        <a href="#Connect With Us">Contact</a>
+        <a href="https://www.facebook.com/share/GUfLXH1Ys147Lt1t/?mibextid=qi2Omg"><i class="fab fa-facebook"></i></a>
+        <a href="https://www.instagram.com/g_thangella_k?utm_source=qr&igsh=aWczdnVtaDR1N280"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.linkedin.com/in/gthangella?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"><i class="fab fa-linkedin"></i></a>
+        <a href="https://www.google.com/maps/place/Hyderabad,+Telangana/@17.4120779,78.0783859,10z/data=!3m1!4b1!4m6!3m5!1s0x3bcb99daeaebd2c7:0xae93b78392bafbc2!8m2!3d17.406498!4d78.4772439!16zL20vMDljNnc?entry=ttu"><i class="fas fa-map-marked-alt"></i></a>
+<a href="mailto:imgtk17@gmail.com"><i class="far fa-envelope"></i></a>
+
+   </nav>
+
+    <main>
+        <h2 id="home">Welcome to GTK-Growth Through Knowledge</h2>
+        <div class="services" id="services">
+            <div class="service">
+                <h3>Web Pages</h3>
+                <p>We provide custom web page development services tailored to your needs.</p>
+            </div>
+            <div class="service">
+                <h3>Web Applications</h3>
+                <p>Build powerful web applications to streamline your business processes.</p>
+            </div>
+            <div class="service">
+                <h3>Mobile Apps</h3>
+                <p>Create mobile apps for iOS and Android platforms to reach your audience on the go.</p>
+            </div>
+        </div>
+        <button id="workWithUsBtn">Want To Work With Us</button>
+        <form class="contact-form" id="detailsForm" style="display:none;" action="#">
+            <h2 id="contact">Enter Your Details</h2>
+            <input type="text" id="projectName" name="projectName" placeholder="Project Name" required><br>
+            <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Project Description" required></textarea><br>
+            <input type="number" id="timePeriod" name="timePeriod" placeholder="Time Period (in days)" required><br>
+<input type="date" id="estimatedDate" name="estimatedDate" min="<?php echo date('Y-m-d'); ?>" required><br>            <input type="text" id="clientName" name="clientName" placeholder="Client Name" required><br>
+            <input type="email" id="clientEmail" name="clientEmail" placeholder="Client Email" required><br>
+            <input type="tel" id="clientPhone" name="clientPhone" placeholder="Client Phone Number" required><br>
+            <button type="button" id="submitBtn">Submit</button>
+            <a id="downloadBtn" download="details.txt"><button type="button">Download Details</button></a>
+        </form>
+        <button id="infoBtn">About This Website</button>
+        <div class="testimonial">
+            <h2 id="feedback">Client Testimonials</h2>
+            <div class="testimonial-card">
+                <p>Working with GTK was a great experience. They delivered our project on time and exceeded our expectations. They Build a Appointment Webpage For Us </p>
+                <p>- Abdul Rasheed and GaliSaheb</p>
+            </div>
+            <div class="testimonial-card">
+                <p>GTK's team is highly skilled and professional. We Developed Our Own Projects Which Are Some Tools Webpages  And  Also  WebSites named Book Your Theater.</p>
+                <p>- GTK company and Team</p>
+            </div>
+        </div>
+        <div class="about" id="about">
+            <h2>About Us</h2>
+            <p>GTK is a service-based company specializing in web page development, web application development, and mobile app development. Our mission is to provide high-quality, innovative solutions to our clients and help them achieve their business goals.</p>
+            <p>At GTK, we have a team of experienced professionals dedicated to delivering exceptional results. We believe in continuous learning and staying updated with the latest technologies to offer cutting-edge solutions to our clients.</p>
+        </div>
+        <div class="faq">
+            <h2>FAQs</h2>
+            <div class="faq-item">
+                <h3>What services do you offer?</h3>
+                <p>We offer web page development, web application development, and mobile app development services.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How can I contact you?</h3>
+                <p>You can reach us through the contact form on our website or by emailing us at info@gtk.com.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Do you provide maintenance services?</h3>
+                <p>Yes, we offer maintenance and support services for the projects we develop to ensure they function smoothly and efficiently.</p>
+            </div>
+        </div>
+
+        <div class="social-media">
+            <h2>Connect With Us</h2>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="mailto:imgtk172@gmail.com"><i class="far fa-envelope"></i></a>
+            <a href="https://www.google.com/maps"><i class="fas fa-map-marked-alt"></i></a>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 GTK | Providing services for web pages, web applications, and mobile apps</p>
+    </footer>
+
+    <script>
+         // Simulate loading time
+    setTimeout(function() {
+        // Hide loading animation
+        document.querySelector('.loader').style.display = 'none';
+
+        // Display header animation
+        document.getElementById('header').style.opacity = '1';
+
+        // Show main content and footer
+        document.querySelector('main').style.display = 'block';
+        document.querySelector('footer').style.display = 'block';
+    }, 3000); // Adjust the loading time as needed
+
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Show contact form when "Want To Work With Us" button is clicked
+        document.getElementById("workWithUsBtn").addEventListener("click", function() {
+            document.getElementById("detailsForm").style.display = 'block';
+        });
+
+      document.getElementById("submitBtn").addEventListener("click", function() {
+    // Validate form fields
+    var projectName = document.getElementById("projectName").value.trim();
+    var projectDescription = document.getElementById("projectDescription").value.trim();
+    var clientName = document.getElementById("clientName").value.trim();
+    var clientEmail = document.getElementById("clientEmail").value.trim();
+    var clientPhone = document.getElementById("clientPhone").value.trim();
+    var timePeriod = document.getElementById("timePeriod").value.trim();
+    var estimatedDate = document.getElementById("estimatedDate").value;
+
+    // Email validation regex
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Phone number validation regex
+    var phoneRegex = /^\d{10}$/;
+
+    if (projectName === "" || projectDescription === "" || clientName === "" || clientEmail === "" || clientPhone === "" || timePeriod === "" || estimatedDate === "") {
+        alert("Please fill in all the fields.");
+        return;
+    }
+
+    if (!emailRegex.test(clientEmail)) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    if (!phoneRegex.test(clientPhone)) {
+        alert("Please enter a valid 10-digit phone number.");
+        return;
+    }
+
+    // Handle form submission
+    var uniqueId = generateUniqueId();
+
+    var detailsText = "ID: GTK" + uniqueId + "\n";
+    detailsText += "Project Name: " + projectName + "\n";
+    detailsText += "Project Description: " + projectDescription + "\n";
+    detailsText += "Client Name: " + clientName + "\n";
+    detailsText += "Client Email: " + clientEmail + "\n";
+    detailsText += "Client Phone: " + clientPhone + "\n";
+    detailsText += "Time Period (in days): " + timePeriod + "\n";
+    detailsText += "Estimated Completion Date: " + estimatedDate + "\n";
+    detailsText += "\nIf you want to send the project documentation or project images or project explanation videos, please send to Gmail: imgtk17@gmail.com with the Downloaded Text File.";
+
+    var blob = new Blob([detailsText], { type: "text/plain;charset=utf-8" });
+    var downloadLink = document.createElement("a");
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = "GTK_Client_Details.txt";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+
+    // Clear input fields
+    document.getElementById("projectName").value = "";
+    document.getElementById("projectDescription").value = "";
+    document.getElementById("clientName").value = "";
+    document.getElementById("clientEmail").value = "";
+    document.getElementById("clientPhone").value = "";
+    document.getElementById("timePeriod").value = "";
+    document.getElementById("estimatedDate").value = "";
+
+    // Hide the form
+    document.getElementById("detailsForm").style.display = 'none';
+
+    // Show the download button
+    document.getElementById("downloadBtn").style.display = 'block';
+
+    // Prompt message
+    alert("Details have been saved. If you want to send the project documentation or project images or project explanation videos, please send to Gmail: imgtk17@gmail.com with the Downloaded Text File.");
+});
+
+// Function to generate a unique ID
+function generateUniqueId() {
+    var uniqueId = "";
+    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for (var i = 0; i < 6; i++) {
+        uniqueId += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return uniqueId;
+}
+
+// Set the minimum selectable date for the estimated completion date input field
+var today = new Date().toISOString().split('T')[0];
+document.getElementById("estimatedDate").min = today;
+
+
+
+        // Show info section when "About This Website" button is clicked
+        document.getElementById("infoBtn").addEventListener("click", function() {
+            alert("This website is designed and developed by GTK.");
+        });
+    </script>
+</body>
+</html>
