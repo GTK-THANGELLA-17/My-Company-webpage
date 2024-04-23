@@ -4,7 +4,7 @@ Welcome to the GTK - Company Website repository!
 
 ## Description
 
-This repository contains the code for a company website template called GTK - Growth Through Knowledge. It is a professional and responsive website template designed for companies offering web development, web application development, and mobile app development services.
+This repository contains the code for a company website template called GTK - Growth Through Knowledge. It is a professional and responsive website template designed for MY company offering web development, web application development, and mobile app development services.
 
 
 ## Used Languages
