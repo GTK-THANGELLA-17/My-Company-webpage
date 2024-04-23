@@ -7,6 +7,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
 
+#workWithUsBtn {
+    font-size: 24px; /* Increase the font size */
+    padding: 20px 40px; /* Increase padding for bigger button */
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Add transition for smooth zoom effect */
+}
+
+#workWithUsBtn:hover {
+    transform: scale(1.1); /* Zoom in on hover */
+}
+
+#workWithUsBtn:active {
+    transform: scale(0.9); /* Zoom out when clicked */
+}
+
+
 /* Loading overlay styles */
         .loading-overlay {
             position: fixed;
@@ -436,10 +456,17 @@
             });
         });
 
-        // Show contact form when "Want To Work With Us" button is clicked
-        document.getElementById("workWithUsBtn").addEventListener("click", function() {
-            document.getElementById("detailsForm").style.display = 'block';
-        });
+       // Show confirmation dialog when "Work With Us" button is clicked
+document.getElementById("workWithUsBtn").addEventListener("click", function() {
+    // Show confirmation dialog
+    var confirmation = confirm("You want to work with us on an idea you have? Or you want to give work to us to build for you? Now On This Site We Take Work To Build It costs money. For further details, contact us.");
+    
+    // If user confirms, show the contact form
+    if (confirmation) {
+        document.getElementById("detailsForm").style.display = 'block';
+    }
+});
+
 
       document.getElementById("submitBtn").addEventListener("click", function() {
     // Validate form fields
@@ -509,7 +536,7 @@
     document.getElementById("downloadBtn").style.display = 'block';
 
     // Prompt message
-    alert("Details have been saved. If you want to send the project documentation or project images or project explanation videos, please send to Gmail: imgtk17@gmail.com with the Downloaded Text File.");
+    alert("Details have been saved. If you want to send the project documentation or project images or project explanation videos, please send to Gmail: imgtk17@gmail.com.  Note: Send The Downloaded txt.file to the mailid : imgtk17@gmail.com ");
 });
 
 // Function to generate a unique ID
